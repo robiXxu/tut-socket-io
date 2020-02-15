@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font: 13px Helvetica, Arial;
+      }
+      input {
+        padding: 10px;
+        width: 90%;
+        border: 1px solid black;
+        margin: 5px;
+        display: block;
+        border-radius: 4px;
+        margin: 8px auto;
+      }
+      #messages {
+        color: #000;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+      #messages li {
+        padding: 5px 10px;
+      }
+      #messages li:nth-child(odd) {
+        background: #eee;
+      }
+    </style>
+  </head>
+  <body>
+    <input autocomplete="off" autofocus />
+    <ul id="messages"></ul>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.slim.js"></script>
+    <script>
+      const socket = io();
+
+      const input = document.querySelector('input');
+      input.addEventListener('keypress', e => {
+        if (e.keyCode !== 13) return;
+        if (input.value.trim() === 0) return;
+        socket.emit('chatMessage', input.value.trim());
+        input.value = '';
+      });
+      socket.on('chatMessage', console.log);
+      socket.on('updateMessages', msg => {
+        const li = document.createElement('li');
+        li.innerText = msg;
+        const messages = document.querySelector('#messages');
+        messages.append(li);
+      });
+    </script>
+  </body>
+</html>
